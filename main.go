@@ -14,9 +14,13 @@ func main() {
 	fmt.Println("Hello, world!")
 	app := fiber.New()
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if os.Getenv("ENV") != "production" {
+		err := godotenv.Load(".env")
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	} else {
+		app.Static("/", "./client/dist")
 	}
 
 	PORT := os.Getenv("PORT")

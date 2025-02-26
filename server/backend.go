@@ -19,6 +19,16 @@ var wsManager = WebSocketManager{
 	clients: make(map[*websocket.Conn]bool),
 }
 
+type SnapshotMessage struct {
+	T    string    `json:"type"`
+	Data []Message `json:"data"`
+}
+
+type UpdateMessage struct {
+	T    string  `json:"type"`
+	Data Message `json:"data"`
+}
+
 func Run(api fiber.Router) error {
 	api.Get("/message", getAllMessages)
 	api.Use("/ws", initWebsockets)
@@ -85,7 +95,11 @@ func sendSnapshot(c *websocket.Conn) error {
 		return err
 	}
 
-	snapshotJson, _ := json.Marshal(messages)
+	snapshotMessage := SnapshotMessage{
+		T:    "snapshot",
+		Data: messages,
+	}
+	snapshotJson, _ := json.Marshal(snapshotMessage)
 
 	if err := c.WriteMessage(websocket.TextMessage, snapshotJson); err != nil {
 		return err
@@ -118,7 +132,12 @@ func handle(c *websocket.Conn) error {
 		return err
 	}
 
-	newMsgJson, err := json.Marshal(message)
+	updateMessage := UpdateMessage{
+		T:    "update",
+		Data: message,
+	}
+
+	newMsgJson, err := json.Marshal(updateMessage)
 	if err != nil {
 		return err
 	}
