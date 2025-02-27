@@ -7,7 +7,9 @@ import { useMessageWebSocket } from './hooks/useMessageWebSocket';
 
 const WS_URL = import.meta.env.MODE === 'development' 
   ? "ws://localhost:5000/api/ws"
-  : "/api/ws"
+  : `ws://${window.location.host}/api/ws`
+
+console.log(window.location)
 
 function App() {
   const {messages, sendMessage} = useMessageWebSocket(WS_URL)
