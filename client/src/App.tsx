@@ -7,7 +7,7 @@ import { useMessageWebSocket } from './hooks/useMessageWebSocket';
 
 const WS_URL = import.meta.env.MODE === 'development' 
   ? "ws://localhost:5000/api/ws"
-  : `ws://${window.location.host}/api/ws`
+  : `wss://${window.location.host}/api/ws`
 
 console.log(window.location)
 
